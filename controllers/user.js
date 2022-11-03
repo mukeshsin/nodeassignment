@@ -1,5 +1,6 @@
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
+//user Register
 export const userRegister = async (req, res) => {
   const salt = await bcrypt.genSalt();
   const hashedPassword = await bcrypt.hash(req.body.password, salt);
@@ -24,6 +25,30 @@ export const userRegister = async (req, res) => {
     });
     console.log(User);
   } catch (error) {
+    res.status(500).send({
+      message: "500 error to the user",
+    });
+  }
+};
+
+//user login
+export const userLogin = async (req, res) => {
+  try {
+    const { userName, password } = req.body;
+    if (!userName || !password) {
+      res.status(400).json({ error: "Please fill the details" });
+    }
+    const userLogin = User.findOne({
+      where: { id: "user.id", userName: "userName", password: "password" },
+    });
+    console.log(userLogin);
+    if (!userLogin) {
+      res.status(400).json({ error: "user error" });
+    } else {
+      return res.json({ id: "login" });
+    }
+  } catch (err) {
+    console.log(err);
     res.status(500).send({
       message: "500 error to the user",
     });

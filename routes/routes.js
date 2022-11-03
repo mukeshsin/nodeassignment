@@ -12,7 +12,7 @@ import {
 
 //import User controller
 import { userRegister } from "../controllers/user.js";
-
+import { userLogin } from "../controllers/user.js";
 // Init express router
 const router = express.Router();
 
@@ -29,5 +29,8 @@ router.delete("/role/delete/:id", deleteRole);
 
 // Route for User register
 router.post("/user/register", userRegister);
+
+//Route for user login
+router.post("/user/login", userLogin);
 
 export default router;
