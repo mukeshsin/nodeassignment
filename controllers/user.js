@@ -1,5 +1,6 @@
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 //user Register
 export const userRegister = async (req, res) => {
   const salt = await bcrypt.genSalt();
@@ -11,7 +12,6 @@ export const userRegister = async (req, res) => {
   try {
     await User.create({
       userName: req.body.userName,
-      password: req.body.password,
       password: hashedPassword,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
@@ -33,19 +33,26 @@ export const userRegister = async (req, res) => {
 
 //user login
 export const userLogin = async (req, res) => {
+  const { userName, password } = req.body;
+  if (!userName || !password) {
+    res.status(400).json({ error: "Please fill the details" });
+  }
+  const salt = await bcrypt.genSalt();
+  const hashedPassword = await bcrypt.compare(req.body.password, salt);
+  console.log(hashedPassword);
   try {
-    const { userName, password } = req.body;
-    if (!userName || !password) {
-      res.status(400).json({ error: "Please fill the details" });
-    }
-    const userLogin = User.findOne({
-      where: { id: "user.id", userName: "userName", password: "password" },
+    const userLogin = await User.findOne({
+      where: {
+        userName: userName,
+        password: hashedPassword,
+      },
     });
+    console.log({ userName: userName, password: password });
     console.log(userLogin);
     if (!userLogin) {
       res.status(400).json({ error: "user error" });
     } else {
-      return res.json({ id: "login" });
+      return res.status(200).send(userLogin);
     }
   } catch (err) {
     console.log(err);
