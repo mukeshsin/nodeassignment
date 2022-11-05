@@ -52,7 +52,7 @@ export const userLogin = async (req, res) => {
     if (!userLogin) {
       res.status(400).json({ error: "user error" });
     } else {
-      return res.status(200).send(userLogin);
+      return res.status(200).send({ id: userLogin.id });
     }
   } catch (err) {
     console.log(err);
