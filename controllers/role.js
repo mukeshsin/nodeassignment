@@ -31,6 +31,7 @@ export const getRoleById = async (req, res) => {
         id: req.params.id,
       },
     });
+    console.log(roles);
     res.status(200).send(roles);
   } catch (error) {
     res.status(500).send({
