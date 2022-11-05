@@ -13,6 +13,7 @@ import {
 //import User controller
 import { userRegister } from "../controllers/user.js";
 import { userLogin } from "../controllers/user.js";
+import { userDetails } from "../controllers/user.js";
 // Init express router
 const router = express.Router();
 
@@ -32,5 +33,8 @@ router.post("/user/register", userRegister);
 
 //Route for user login
 router.post("/user/login", userLogin);
+
+//route for user get
+router.get("/user/get", userDetails);
 
 export default router;

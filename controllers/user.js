@@ -61,3 +61,21 @@ export const userLogin = async (req, res) => {
     });
   }
 };
+
+//userDetail get by access token
+
+export const userDetails = async (req, res) => {
+  try {
+    const users = await User.findOne({
+      where: {
+        id: req.headers.id,
+      },
+    });
+    console.log(users);
+    res.status(200).send(users);
+  } catch (error) {
+    res.status(500).send({
+      message: "500 error to the user",
+    });
+  }
+};
