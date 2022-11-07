@@ -64,7 +64,7 @@ export const userLogin = async (req, res) => {
 
 //userDetail get by access token
 
-export const userDetails = async (req, res, next) => {
+export const userDetails = async (req, res) => {
   try {
     const users = await User.findOne({
       where: {
@@ -73,13 +73,6 @@ export const userDetails = async (req, res, next) => {
     });
     console.log(users);
     res.status(200).send(users);
-    const token = req.headers["id"];
-    if (token) {
-      res.status(200).send({ message: "access successfully" });
-    } else {
-      res.status(400).send({ err: "access denied" });
-    }
-    next();
   } catch (error) {
     res.status(500).send({
       message: "500 error to the user",
