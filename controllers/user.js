@@ -79,3 +79,21 @@ export const GetUserDetails = async (req, res) => {
     });
   }
 };
+
+// userdetails delete by access token
+export const deleteUserDetails = async (req, res) => {
+  try {
+    await User.destroy({
+      where: {
+        id: req.headers.id,
+      },
+    });
+    res.status(200).send({
+      message: "user Deleted",
+    });
+  } catch (error) {
+    res.status(500).send({
+      message: "500 error to the user",
+    });
+  }
+};
