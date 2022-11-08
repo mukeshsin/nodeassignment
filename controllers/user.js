@@ -64,7 +64,7 @@ export const userLogin = async (req, res) => {
 
 //userDetail get by access token
 
-export const userDetails = async (req, res) => {
+export const GetUserDetails = async (req, res) => {
   try {
     const users = await User.findOne({
       where: {

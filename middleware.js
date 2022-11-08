@@ -1,8 +1,7 @@
-export const accessToken = async (res, req, next) => {
+export const validateAccessToken = async (req, res, next) => {
+  console.log(req);
   if (!req.headers.id) {
-    res.send("please provide users.id");
-  } else if (req.headers.id) {
-    res.send("valid user id");
+    res.status(400).send({err:"please provide users.id"});
   } else {
     next();
   }

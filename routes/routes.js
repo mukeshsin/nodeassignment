@@ -13,8 +13,8 @@ import {
 //import User controller
 import { userRegister } from "../controllers/user.js";
 import { userLogin } from "../controllers/user.js";
-import { userDetails } from "../controllers/user.js";
-import { accessToken } from "../middleware.js";
+import { GetUserDetails } from "../controllers/user.js";
+import { validateAccessToken } from "../middleware.js";
 
 // Init express router
 const router = express.Router();
@@ -37,6 +37,6 @@ router.post("/user/register", userRegister);
 router.post("/user/login", userLogin);
 
 //route for user get
-router.get("/user/get", accessToken, userDetails);
+router.get("/user/get", validateAccessToken, GetUserDetails);
 
 export default router;
