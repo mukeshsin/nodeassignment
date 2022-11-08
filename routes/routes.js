@@ -16,7 +16,7 @@ import { userLogin } from "../controllers/user.js";
 import { GetUserDetails } from "../controllers/user.js";
 import { validateAccessToken } from "../middleware.js";
 import { deleteUserDetails } from "../controllers/user.js";
-
+import { getUsersListByPage } from "../controllers/user.js";
 // Init express router
 const router = express.Router();
 
@@ -41,5 +41,8 @@ router.post("/user/login", userLogin);
 router.get("/user/get", validateAccessToken, GetUserDetails);
 // route for user delete
 router.delete("/user/delete", validateAccessToken, deleteUserDetails);
+
+// get users data by page no.
+router.get("/user/list/:page", getUsersListByPage);
 
 export default router;
