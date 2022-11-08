@@ -15,6 +15,7 @@ import { userRegister } from "../controllers/user.js";
 import { userLogin } from "../controllers/user.js";
 import { GetUserDetails } from "../controllers/user.js";
 import { validateAccessToken } from "../middleware.js";
+import { deleteUserDetails } from "../controllers/user.js";
 
 // Init express router
 const router = express.Router();
@@ -38,5 +39,7 @@ router.post("/user/login", userLogin);
 
 //route for user get
 router.get("/user/get", validateAccessToken, GetUserDetails);
+// route for user delete
+router.delete("/user/delete", validateAccessToken, deleteUserDetails);
 
 export default router;
