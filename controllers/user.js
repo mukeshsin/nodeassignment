@@ -68,7 +68,7 @@ export const GetUserDetails = async (req, res) => {
   try {
     const users = await User.findOne({
       where: {
-        id: req.headers.id,
+        id: id.headers.id,
       },
     });
     console.log(users);
@@ -100,11 +100,11 @@ export const deleteUserDetails = async (req, res) => {
 
 // users list by page no.
 export const getUsersListByPage = async (req, res) => {
-  
   try {
-      const users = await User.findAndCountAll({
-      limit:3,
-      offset:1,
+    const users = await User.findAndCountAll({
+      page: req.params.page,
+      limit: 2,
+      offset: 2,
     });
     console.log(users);
     res.status(200).send(users);
