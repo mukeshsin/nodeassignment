@@ -100,22 +100,10 @@ export const deleteUserDetails = async (req, res) => {
 
 // users list by page no.
 export const getUsersListByPage = async (req, res) => {
-  const pageAsNumber = Number.parseInt(req.query.page);
-  const sizeAsNumber = Number.parseInt(req.query.size);
-  let page = 0;
-  if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0) {
-    page = pageAsNumber;
-  }
-
-  let size = 2;
-  if (!Number.isNaN(sizeAsNumber)) {
-    if (sizeAsNumber > 0 && sizeAsNumber < 2) {
-      size = sizeAsNumber;
-    }
-  }
   const users = await User.findAndCountAll({
-    limit: size,
-    offset: page * size,
+    limit: 3,
+    offset: (req.params.page - 1) * 3,
   });
-  res.send(users);
+  console.log(users);
+  res.status(200).send(users);
 };
