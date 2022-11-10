@@ -68,7 +68,7 @@ export const GetUserDetails = async (req, res) => {
   try {
     const users = await User.findOne({
       where: {
-        id: id.headers.id,
+        id: req.headers.id,
       },
     });
     console.log(users);
@@ -100,17 +100,22 @@ export const deleteUserDetails = async (req, res) => {
 
 // users list by page no.
 export const getUsersListByPage = async (req, res) => {
-  try {
-    const users = await User.findAndCountAll({
-      page: req.params.page,
-      limit: 2,
-      offset: 2,
-    });
-    console.log(users);
-    res.status(200).send(users);
-  } catch (error) {
-    res.status(500).send({
-      message: "500 error to the user",
-    });
+  const pageAsNumber = Number.parseInt(req.query.page);
+  const sizeAsNumber = Number.parseInt(req.query.size);
+  let page = 0;
+  if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0) {
+    page = pageAsNumber;
   }
+
+  let size = 2;
+  if (!Number.isNaN(sizeAsNumber)) {
+    if (sizeAsNumber > 0 && sizeAsNumber < 2) {
+      size = sizeAsNumber;
+    }
+  }
+  const users = await User.findAndCountAll({
+    limit: size,
+    offset: page * size,
+  });
+  res.send(users);
 };
