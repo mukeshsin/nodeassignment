@@ -12,9 +12,10 @@ import {
 
 //import User controller
 import { userRegister } from "../controllers/user.js";
-import { userLogin } from "../controllers/user.js";
+import { user } from "../controllers/user.js";
 import { GetUserDetails } from "../controllers/user.js";
 import { validateAccessToken } from "../middleware.js";
+import { validateJwtToken } from "../middleware.js";
 import { deleteUserDetails } from "../controllers/user.js";
 import { getUsersListByPage } from "../controllers/user.js";
 // Init express router
@@ -35,7 +36,7 @@ router.delete("/role/delete/:id", deleteRole);
 router.post("/user/register", userRegister);
 
 //Route for user login
-router.post("/user/login", userLogin);
+router.post("/user/login", validateJwtToken, user);
 
 //route for user get
 router.get("/user/get", validateAccessToken, GetUserDetails);

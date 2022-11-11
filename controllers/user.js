@@ -32,7 +32,7 @@ export const userRegister = async (req, res) => {
 };
 
 //user login
-export const userLogin = async (req, res) => {
+export const user = async (req, res) => {
   const { userName, password } = req.body;
   if (!userName || !password) {
     res.status(400).json({ error: "Please fill the details" });
@@ -41,18 +41,19 @@ export const userLogin = async (req, res) => {
   const hashedPassword = await bcrypt.compare(req.body.password, salt);
   console.log(hashedPassword);
   try {
-    const userLogin = await User.findOne({
+    const user = await User.findOne({
       where: {
         userName: userName,
         password: hashedPassword,
       },
     });
     console.log({ userName: userName, password: password });
-    console.log(userLogin);
-    if (!userLogin) {
+    console.log(user);
+    if (!user) {
       res.status(400).json({ error: "user error" });
     } else {
-      return res.status(200).send({ id: userLogin.id });
+      let token= jwt.sign({id:user.id},'secret',{expiresIn: "1hr"})
+      return res.status(200).send({user,token:token});
     }
   } catch (err) {
     console.log(err);
@@ -107,3 +108,4 @@ export const getUsersListByPage = async (req, res) => {
   console.log(users);
   res.status(200).send(users);
 };
+
