@@ -8,13 +8,18 @@ export const validateAccessToken = async (req, res, next) => {
   }
 };
 
+export const validateJwtToken = async (req, res, next) => {
+  const token = req.headers["id"];
 
-export const validateJwtToken= async(req,res,next)=>{
-  if(token== null){
-    res.status(401).send(token is not present)
+  if (!token) {
+    res.status(401).send({ message: " token invalid" });
   }
-  if(token){
-    res.status(400).send( token is exist)
- }
- 
-}
+  jwt.verify(token, "secret", (err, user) => {
+    if (err) {
+      res.status(400).send({ err: "token expired" });
+    } else {
+      res.send(user);
+      next();
+    }
+  });
+};

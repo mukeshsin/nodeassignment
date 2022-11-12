@@ -14,8 +14,7 @@ import {
 import { userRegister } from "../controllers/user.js";
 import { user } from "../controllers/user.js";
 import { GetUserDetails } from "../controllers/user.js";
-import { validateAccessToken } from "../middleware.js";
-import { validateJwtToken } from "../middleware.js";
+import { validateAccessToken, validateJwtToken } from "../middleware.js";
 import { deleteUserDetails } from "../controllers/user.js";
 import { getUsersListByPage } from "../controllers/user.js";
 // Init express router
@@ -39,9 +38,14 @@ router.post("/user/register", userRegister);
 router.post("/user/login", validateJwtToken, user);
 
 //route for user get
-router.get("/user/get", validateAccessToken, GetUserDetails);
+router.get("/user/get", validateJwtToken, validateAccessToken, GetUserDetails);
 // route for user delete
-router.delete("/user/delete", validateAccessToken, deleteUserDetails);
+router.delete(
+  "/user/delete",
+  validateJwtToken,
+  validateAccessToken,
+  deleteUserDetails
+);
 
 // get users data by page no.
 router.get("/user/list/:page", getUsersListByPage);

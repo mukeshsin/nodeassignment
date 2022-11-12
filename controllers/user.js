@@ -52,8 +52,8 @@ export const user = async (req, res) => {
     if (!user) {
       res.status(400).json({ error: "user error" });
     } else {
-      let token= jwt.sign({id:user.id},'secret',{expiresIn: "1hr"})
-      return res.status(200).send({user,token:token});
+      let token = jwt.sign({ id: user.id }, "secret", { expiresIn: "1hr" });
+      return res.status(200).send({ user, token: token });
     }
   } catch (err) {
     console.log(err);
@@ -108,4 +108,3 @@ export const getUsersListByPage = async (req, res) => {
   console.log(users);
   res.status(200).send(users);
 };
-
