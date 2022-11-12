@@ -17,6 +17,7 @@ import { GetUserDetails } from "../controllers/user.js";
 import { validateAccessToken, validateJwtToken } from "../middleware.js";
 import { deleteUserDetails } from "../controllers/user.js";
 import { getUsersListByPage } from "../controllers/user.js";
+import { postUserAddress } from "../controllers/user.js";
 // Init express router
 const router = express.Router();
 
@@ -49,5 +50,8 @@ router.delete(
 
 // get users data by page no.
 router.get("/user/list/:page", getUsersListByPage);
+
+//post for user address
+router.post("/user/address", postUserAddress);
 
 export default router;

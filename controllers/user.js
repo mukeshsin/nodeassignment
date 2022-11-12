@@ -1,6 +1,7 @@
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import nodemon from "nodemon";
 //user Register
 export const userRegister = async (req, res) => {
   const salt = await bcrypt.genSalt();
@@ -107,4 +108,23 @@ export const getUsersListByPage = async (req, res) => {
   });
   console.log(users);
   res.status(200).send(users);
+};
+
+// post user address
+export const postUserAddress = async (req, res) => {
+  try {
+    const user = await User.create({
+      user_id: req.body.id,
+      address: req.body.address,
+      city: req.body.city,
+      state: req.body.state,
+      pinCode: req.body.pincode,
+      phoneNumber: req.body.phoneNumber,
+    });
+    res.status(200).send(user);
+  } catch (error) {
+    res.status(500).send({
+      message: "500 error to the user",
+    });
+  }
 };
