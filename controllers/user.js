@@ -103,8 +103,8 @@ export const deleteUserDetails = async (req, res) => {
 // users list by page no.
 export const getUsersListByPage = async (req, res) => {
   const users = await User.findAndCountAll({
-    limit: 3,
-    offset: (req.params.page - 1) * 3,
+    limit: parseInt(req.query.limit),
+    offset: (req.params.page - 1) * parseInt(req.query.limit),
   });
   console.log(users);
   res.status(200).send(users);
