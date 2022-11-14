@@ -1,7 +1,6 @@
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import nodemon from "nodemon";
 //user Register
 export const userRegister = async (req, res) => {
   const salt = await bcrypt.genSalt();
@@ -32,8 +31,8 @@ export const userRegister = async (req, res) => {
   }
 };
 
-//user login
-export const user = async (req, res) => {
+//userlogin
+export const userLogin = async (req, res) => {
   const { userName, password } = req.body;
   if (!userName || !password) {
     res.status(400).json({ error: "Please fill the details" });
