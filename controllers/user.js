@@ -112,15 +112,19 @@ export const getUsersListByPage = async (req, res) => {
 // post user address
 export const postUserAddress = async (req, res) => {
   try {
-    const user = await User.create({
+    const user = await User.build({
       user_id: req.body.id,
       address: req.body.address,
       city: req.body.city,
       state: req.body.state,
-      pinCode: req.body.pincode,
+      pinCode: req.body.pinCode,
       phoneNumber: req.body.phoneNumber,
     });
-    res.status(200).send(user);
+     user.save().then
+    {
+      res.status(200).send(user);
+      console.log(id);
+    }
   } catch (error) {
     res.status(500).send({
       message: "500 error to the user",
