@@ -12,7 +12,7 @@ import {
 
 //import User controller
 import { userRegister } from "../controllers/user.js";
-import { user } from "../controllers/user.js";
+import { userLogin } from "../controllers/user.js";
 import { GetUserDetails } from "../controllers/user.js";
 import { validateAccessToken, validateJwtToken } from "../middleware.js";
 import { deleteUserDetails } from "../controllers/user.js";
@@ -36,7 +36,7 @@ router.delete("/role/delete/:id", deleteRole);
 router.post("/user/register", userRegister);
 
 //Route for user login
-router.post("/user/login", validateJwtToken, user);
+router.post("/user/login", userLogin);
 
 //route for user get
 router.get("/user/get", validateJwtToken, validateAccessToken, GetUserDetails);

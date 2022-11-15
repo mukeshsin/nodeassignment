@@ -1,7 +1,7 @@
 import User from "../models/user.js";
+import Address from "../models/address.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import nodemon from "nodemon";
 //user Register
 export const userRegister = async (req, res) => {
   const salt = await bcrypt.genSalt();
@@ -32,8 +32,8 @@ export const userRegister = async (req, res) => {
   }
 };
 
-//user login
-export const user = async (req, res) => {
+//userlogin
+export const userLogin = async (req, res) => {
   const { userName, password } = req.body;
   if (!userName || !password) {
     res.status(400).json({ error: "Please fill the details" });
@@ -103,8 +103,8 @@ export const deleteUserDetails = async (req, res) => {
 // users list by page no.
 export const getUsersListByPage = async (req, res) => {
   const users = await User.findAndCountAll({
-    limit: 3,
-    offset: (req.params.page - 1) * 3,
+    limit: parseInt(req.query.limit),
+    offset: (req.params.page - 1) * parseInt(req.query.limit),
   });
   console.log(users);
   res.status(200).send(users);
@@ -113,15 +113,19 @@ export const getUsersListByPage = async (req, res) => {
 // post user address
 export const postUserAddress = async (req, res) => {
   try {
-    const user = await User.create({
-      user_id: req.body.id,
+    await Address.create({
       address: req.body.address,
       city: req.body.city,
       state: req.body.state,
-      pinCode: req.body.pincode,
+      pinCode: req.body.pinCode,
       phoneNumber: req.body.phoneNumber,
+      type: req.body.type,
+      userId: req.body.userId,
     });
-    res.status(200).send(user);
+    res.status(200).send({
+      message: "Insert Data successfully ",
+    });
+    console.log(Address);
   } catch (error) {
     res.status(500).send({
       message: "500 error to the user",

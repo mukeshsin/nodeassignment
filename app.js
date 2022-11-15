@@ -11,6 +11,7 @@ import db from "./config/db.config.js";
 import Router from "./routes/routes.js";
 //await db.sync({force:true});
 
+
 const app = express();
 app.use(express.json());
 
