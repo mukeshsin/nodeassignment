@@ -9,7 +9,7 @@ import db from "./config/db.config.js";
 
 //import router
 import Router from "./routes/routes.js";
-await db.sync({force:false});
+//await db.sync({force:true});
 
 
 const app = express();

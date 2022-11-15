@@ -1,4 +1,5 @@
 import User from "../models/user.js";
+import Address from "../models/address.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 //user Register
@@ -112,19 +113,19 @@ export const getUsersListByPage = async (req, res) => {
 // post user address
 export const postUserAddress = async (req, res) => {
   try {
-    const user = await User.build({
-      user_id: req.body.id,
+    await Address.create({
       address: req.body.address,
       city: req.body.city,
       state: req.body.state,
       pinCode: req.body.pinCode,
       phoneNumber: req.body.phoneNumber,
+      type: req.body.type,
+      userId: req.body.userId,
     });
-     user.save().then
-    {
-      res.status(200).send(user);
-      console.log(id);
-    }
+    res.status(200).send({
+      message: "Insert Data successfully ",
+    });
+    console.log(Address);
   } catch (error) {
     res.status(500).send({
       message: "500 error to the user",

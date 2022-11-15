@@ -8,12 +8,7 @@ const { DataTypes } = Sequelize;
 const Address = db.define(
   "addresses",
   {
-    id:{
-     type:DataTypes.Int,
-     allowNull:false,
-     autoIncrement:true
-    },
-      address: {
+    address: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -24,7 +19,6 @@ const Address = db.define(
     state: {
       type: DataTypes.STRING,
       allowNull: false,
-      
     },
     pinCode: {
       type: DataTypes.STRING,
@@ -32,7 +26,10 @@ const Address = db.define(
     phoneNumber: {
       type: DataTypes.STRING,
     },
-    user_id: {
+    type: {
+      type: DataTypes.STRING,
+    },
+    userId: {
       type: DataTypes.INTEGER,
       allownull: false,
       references: {
@@ -50,4 +47,3 @@ const Address = db.define(
 
 // Export model user
 export default Address;
-
