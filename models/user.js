@@ -48,5 +48,6 @@ const User = db.define(
   }
 );
 
+
 // Export model user
 export default User;

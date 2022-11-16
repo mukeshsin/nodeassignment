@@ -133,30 +133,22 @@ export const postUserAddress = async (req, res) => {
   }
 };
 
-
-
 //userListAddress
 
-export const getUserListAddressById= async(req,res)=>{
-  try{
-    const addresses=await Address.findOne({
-      where:{
-        userId:req.params.id
-      }
-    });
-    console.log(addresses);
-    res.status(200).send(addresses);
-  }catch(error){
-    res.status(500).send({
-      message:"500 error to the user",
-    })
-  }
+export const getUserListAddressById = async (req, res) => {
+  const users = await User.findAll({
+    attributes: ["userName", "emailId"],
+    include: [
+      {
+        model: ["addresses"],
+        as: "addressDetails",
+        attributes: ["address", "city", "state", "pinCode"],
+      },
+    ],
+    where: {
+      UserId: req.params.userId,
+    },
+  });
+  console.log(users);
+  res.status(200).send(users);
 };
-
-
-
-
-
-
-
-

@@ -56,6 +56,6 @@ router.get("/user/list/:page", getUsersListByPage);
 router.post("/user/address", postUserAddress);
 
 //userListAddress
-router.post("/user/get/:id", getUserListAddressById);
+router.get("/user/get/:id", getUserListAddressById);
 
 export default router;

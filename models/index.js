@@ -19,4 +19,11 @@ db.sequelize = sequelize;
 db.roles = require("/role.js")(sequelize, Sequelize);
 db.users = require("/user.js")(sequelize, Sequelize);
 db.addresses = require("/address.js")(sequelize, Sequelize);
+
+//relational between users and addresses
+db.users.hasMany(db.addresses, { as: "addressDetails" });
+db.addresses.belongsTo(db.users, {
+  foreignKey: "userId",
+  as: "userWithAddress",
+});
 module.exports = db;
