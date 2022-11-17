@@ -2,6 +2,7 @@
 import { Sequelize } from "sequelize";
 // import connection
 import db from "../config/db.config.js";
+import { userRegister } from "../controllers/user.js";
 
 const { DataTypes } = Sequelize;
 // table define
@@ -47,7 +48,6 @@ const User = db.define(
     tableName: "users",
   }
 );
-
 
 // Export model user
 export default User;
