@@ -1,5 +1,6 @@
 const dbConfig = require("../config/db.config.js");
 const Sequelize = require("sequelize");
+const { default: User } = require("./user.js");
 const sequelize = new Sequelize(dbConfig.db, dbConfig.user, dbConfig.password, {
   host: dbConfig.HOST,
   password: dbConfig.password,
@@ -21,10 +22,6 @@ db.users = require("/user.js")(sequelize, Sequelize);
 db.addresses = require("/address.js")(sequelize, Sequelize);
 
 //relational between users and addresses
-db.users.hasMany(db.addresses, { foreignKey: "userId", as: "addressDetails" });
-db.addresses.belongsTo(db.users, {
-  foreignKey: "userId",
-  as: "userWithAddress",
-});
+User.hasMany(Address);
 
 module.exports = db;

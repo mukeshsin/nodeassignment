@@ -1,10 +1,8 @@
 import User from "../models/user.js";
 import Address from "../models/address.js";
-import db from "../config/db.config.js"
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-const Users= db.users;
-const Addresses= db.addresses
+import models from "../models/address.js";
 //user Register
 export const userRegister = async (req, res) => {
   const salt = await bcrypt.genSalt();
@@ -139,20 +137,12 @@ export const postUserAddress = async (req, res) => {
 //userListAddress
 
 export const getUserListAddressById = async (req, res) => {
-  const users = await Users.findAll({
-    attributes: ["userName", "emailId"],
-    include: [
-      {
-        model:Addresses,
-        as: "addressDetails",
-        attributes: ["address", "city", "state", "pinCode"],
-      },
-    ],
+  const user = await User.findAll({
+    include: models.Address,
     where: {
-      UserId: req.params.userId,
+      id: req.params.id,
     },
   });
-  console.log(users);
-  res.status(200).send(users);
+  console.log(user);
+  res.status(200).send(user);
 };
-
