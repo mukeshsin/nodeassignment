@@ -2,7 +2,6 @@ import User from "../models/user.js";
 import Address from "../models/address.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import models from "../models/address.js";
 //user Register
 export const userRegister = async (req, res) => {
   const salt = await bcrypt.genSalt();
@@ -145,7 +144,7 @@ export const getUserListAddressById = async (req, res) => {
     attributes: ["userName", "emailId"],
     include: [
       {
-        model:Address,
+        model: Address,
         as: "addressDetails",
         attributes: ["address", "city", "state", "pinCode"],
       },

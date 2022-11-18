@@ -2,6 +2,7 @@
 import { Sequelize } from "sequelize";
 // import connection
 import db from "../config/db.config.js";
+import User from "./user.js";
 
 const { DataTypes } = Sequelize;
 // table define
@@ -33,7 +34,7 @@ const Address = db.define(
       type: DataTypes.INTEGER,
       allownull: false,
       references: {
-        model: "users",
+        model: User,
         key: "id",
       },
     },
