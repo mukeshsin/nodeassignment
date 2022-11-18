@@ -3,6 +3,10 @@ import { Sequelize } from "sequelize";
 // import connection
 import db from "../config/db.config.js";
 import User from "./user.js";
+<<<<<<< HEAD
+=======
+
+>>>>>>> 329eddee4ac9139229abf7efc16d3feab024981b
 const { DataTypes } = Sequelize;
 // table define
 const Address = db.define(

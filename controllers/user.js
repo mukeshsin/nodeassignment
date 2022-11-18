@@ -2,7 +2,6 @@ import User from "../models/user.js";
 import Address from "../models/address.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import models from "../models/address.js";
 //user Register
 export const userRegister = async (req, res) => {
   const salt = await bcrypt.genSalt();
