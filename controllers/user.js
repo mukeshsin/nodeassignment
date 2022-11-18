@@ -145,7 +145,7 @@ export const getUserListAddressById = async (req, res) => {
     attributes: ["userName", "emailId"],
     include: [
       {
-        model:Address,
+        model: Address,
         as: "addressDetails",
         attributes: ["address", "city", "state", "pinCode"],
       },

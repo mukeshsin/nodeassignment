@@ -10,6 +10,9 @@ import db from "./config/db.config.js";
 //import router
 import Router from "./routes/routes.js";
 //await db.sync({alter:true});
+
+// models
+import "./models/index.js";
 const app = express();
 app.use(express.json());
 
