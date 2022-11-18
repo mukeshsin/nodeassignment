@@ -137,12 +137,23 @@ export const postUserAddress = async (req, res) => {
 //userListAddress
 
 export const getUserListAddressById = async (req, res) => {
-  const user = await User.findAll({
-    include: models.Address,
+  const data = await User.findAll({
+    // include:Address,
+    // where: {
+    //   id: req.params.id,
+    // },
+    attributes: ["userName", "emailId"],
+    include: [
+      {
+        model:Address,
+        as: "addressDetails",
+        attributes: ["address", "city", "state", "pinCode"],
+      },
+    ],
     where: {
       id: req.params.id,
     },
   });
-  console.log(user);
-  res.status(200).send(user);
+  console.log(data);
+  res.status(200).send(data);
 };

@@ -22,6 +22,16 @@ db.users = require("/user.js")(sequelize, Sequelize);
 db.addresses = require("/address.js")(sequelize, Sequelize);
 
 //relational between users and addresses
-User.hasMany(Address);
+ User.hasMany(Address,{foreignKey: 'userId',as:addressDetails});
+
+ 
+// //db.users.hasMany(db.addresses);
+
+// User.associate = function(models) {
+//   User.hasMany(Address, { 
+//       foreignKey : "userId",
+//       as: 'addresses' 
+//   });
+
 
 module.exports = db;
