@@ -11,14 +11,9 @@ import db from "./config/db.config.js";
 import Router from "./routes/routes.js";
 //await db.sync({alter:true});
 
-<<<<<<< HEAD
 // models
 import "./models/index.js";
-=======
-// modals
-import './models/index.js'
 
->>>>>>> 329eddee4ac9139229abf7efc16d3feab024981b
 const app = express();
 app.use(express.json());
 

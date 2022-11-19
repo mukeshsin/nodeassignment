@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 // const dbConfig = require("../config/db.config.js");
 // const Sequelize = require("sequelize");
 // const { default: User } = require("./user.js");
@@ -37,17 +37,7 @@
 
 // module.exports = db;
 
-import Address from "./address.js";
-import User from "./user.js";
-User.hasMany(Address, {
-  as: 'addressDetails'
-});
-Address.belongsTo(User, {
-  foreignKey: "userId",
-  as: "user",
-});
 
-=======
 import Address from "./address.js";
 import User from "./user.js";
 
@@ -59,5 +49,4 @@ Address.belongsTo(User, {
   as: "user",
 });
 
->>>>>>> 329eddee4ac9139229abf7efc16d3feab024981b
 export default { User, Address };
