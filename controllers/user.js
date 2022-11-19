@@ -132,3 +132,22 @@ export const postUserAddress = async (req, res) => {
     });
   }
 };
+
+//userListWithAddress
+export const getUserListAddressById = async (req, res) => {
+  const data = await User.findAll({
+    attributes: ["userName", "emailId"],
+    include: [
+      {
+        model: Address,
+        as: "addressList",
+        attributes: ["address", "city", "state", "pinCode"],
+      },
+    ],
+    where: {
+      id: req.params.id,
+    },
+  });
+  console.log(data);
+  res.status(200).send({ user: data });
+};

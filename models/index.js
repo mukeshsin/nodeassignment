@@ -1,22 +1,12 @@
-const dbConfig = require("../config/db.config.js");
-const Sequelize = require("sequelize");
-const sequelize = new Sequelize(dbConfig.db, dbConfig.user, dbConfig.password, {
-  host: dbConfig.HOST,
-  password: dbConfig.password,
-  dialect: dbConfig.dialect,
-  operatorsAliases: false,
-  pool: {
-    max: dbConfig.pool.max,
-    min: dbConfig.pool.min,
-    acquire: dbConfig.pool.acquire,
-    idle: dbConfig.pool.idle,
-  },
-});
-const db = {};
-db.Sequelize = Sequelize;
-db.sequelize = sequelize;
+import Address from "./address.js";
+import User from "./user.js";
 
-db.roles = require("/role.js")(sequelize, Sequelize);
-db.users = require("/user.js")(sequelize, Sequelize);
-db.addresses = require("/address.js")(sequelize, Sequelize);
-module.exports = db;
+User.hasMany(Address, {
+  as: "addressList",
+});
+Address.belongsTo(User, {
+  foreignKey: "userId",
+  as: "user",
+});
+
+export default { User, Address };
