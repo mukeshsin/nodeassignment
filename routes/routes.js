@@ -1,6 +1,7 @@
 // Import express
 import express from "express";
-
+import multer from "multer";
+const upload = multer({ dest: "uploads/" });
 //Import Role controller
 import {
   getRoles,
@@ -19,6 +20,10 @@ import { deleteUserDetails } from "../controllers/user.js";
 import { getUsersListByPage } from "../controllers/user.js";
 import { postUserAddress } from "../controllers/user.js";
 import { getUserListAddressById } from "../controllers/user.js";
+
+//import uploadImage
+import { uploadImage } from "../controllers/user.js";
+
 // Init express router
 const router = express.Router();
 
@@ -57,5 +62,7 @@ router.post("/user/address", postUserAddress);
 
 //userListAddress
 router.get("/user/get/:id", getUserListAddressById);
+//uploadImage
+router.post("/user/image", upload.single("profilePic"), uploadImage);
 
 export default router;

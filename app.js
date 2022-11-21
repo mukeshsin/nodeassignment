@@ -3,12 +3,16 @@ import express from "express";
 //import cors
 import cors from "cors";
 
+
+
+
 // import database
 import db from "./config/db.config.js";
 
 //import router
 import Router from "./routes/routes.js";
-await db.sync({ alter: true });
+// await db.sync({ alter: true });
+
 
 // models
 import "./models/index.js";
