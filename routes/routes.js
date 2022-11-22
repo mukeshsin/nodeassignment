@@ -1,17 +1,19 @@
 // Import express
 import express from "express";
+
 // upload single image
 import multer from "multer";
-var storage= multer.diskStorage({
-  destination:function(req,file,cb){
-    cb(null,'public')
-
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public");
   },
-  filename:function(req,file,cb){
-    cb(null,'images.jpg')
-  }
-})
-const upload = multer({storage:storage});
+  filename: function (req, file, cb) {
+    console.log(file);
+    let newName = Date.now() + "_" + file.originalname;
+    cb(null, newName);
+  },
+});
+const upload = multer({ storage: storage });
 
 //Import Role controller
 import {
@@ -66,14 +68,14 @@ router.delete(
 );
 
 // get users data by page no.
-router.get("/user/list/:page",validateJwtToken, getUsersListByPage);
+router.get("/user/list/:page", validateJwtToken, getUsersListByPage);
 
 //post for user address
 router.post("/user/address", postUserAddress);
 
 //userListAddress
-router.get("/user/get/:id",validateJwtToken, getUserListAddressById);
+router.get("/user/get/:id", validateJwtToken, getUserListAddressById);
 //uploadImage
-router.post("/user/profile", upload.single('profile'), userProfile);
+router.post("/user/profile", upload.single("profile"), userProfile);
 
 export default router;

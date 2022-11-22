@@ -153,8 +153,6 @@ export const getUserListAddressById = async (req, res) => {
 };
 
 export const userProfile = async (req, res) => {
-  console.log(req.file);
-  console.log('storage location is ', req.hostname +'/' + req.file.path);
+  console.log("storage location is ", req.hostname + "/" + req.file.path);
   return res.send(req.file);
-
-}
+};
