@@ -2,7 +2,17 @@
 import express from "express";
 // upload single image
 import multer from "multer";
-const upload = multer({ dest: "public" });
+var storage= multer.diskStorage({
+  destination:function(req,file,cb){
+    cb(null,'public')
+
+  },
+  filename:function(req,file,cb){
+    cb(null,'images.jpg')
+  }
+})
+const upload = multer({storage:storage});
+
 //Import Role controller
 import {
   getRoles,
