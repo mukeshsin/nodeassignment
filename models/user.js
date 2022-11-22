@@ -2,6 +2,7 @@
 import { Sequelize } from "sequelize";
 // import connection
 import db from "../config/db.config.js";
+import Role from "./role.js";
 
 const { DataTypes } = Sequelize;
 // table define
@@ -32,11 +33,15 @@ const User = db.define(
     lastName: {
       type: DataTypes.STRING,
     },
+
+     image: {
+      type: DataTypes.STRING,
+    },
     roleId: {
       type: DataTypes.INTEGER,
       allownull: false,
       references: {
-        model: "roles",
+        model: Role,
         key: "id",
       },
     },

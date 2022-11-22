@@ -152,7 +152,10 @@ export const getUserListAddressById = async (req, res) => {
   res.status(200).send({ user: data });
 };
 
-export const uploadImage = async (req, res) => {
+export const userProfile = async (req, res) => {
+  
   console.log(req.file);
-  res.status(200).send({ message: "uploaded" });
-};
+  console.log('storage location is ', req.hostname +'/' + req.file.path);
+  return res.send(req.file);
+
+}
