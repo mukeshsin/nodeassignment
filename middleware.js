@@ -23,3 +23,15 @@ export const validateJwtToken = async (req, res, next) => {
     }
   });
 };
+
+export const validateUserProfile = async (req, res, next) => {
+  if (!req.file) {
+    res.status(401).send({ message: " please provide request file" });
+  }
+  if (!req.file(/\.(jpg|jpeg|png)$/)) {
+    res.status(401).send({ message: " please upload valid image" });
+  } else {
+    res.send(user);
+    next();
+  }
+};

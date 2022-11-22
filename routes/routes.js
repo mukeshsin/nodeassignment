@@ -29,6 +29,7 @@ import { userRegister } from "../controllers/user.js";
 import { userLogin } from "../controllers/user.js";
 import { GetUserDetails } from "../controllers/user.js";
 import { validateAccessToken, validateJwtToken } from "../middleware.js";
+import { validateUserProfile } from "../middleware.js";
 import { deleteUserDetails } from "../controllers/user.js";
 import { getUsersListByPage } from "../controllers/user.js";
 import { postUserAddress } from "../controllers/user.js";
@@ -76,6 +77,11 @@ router.post("/user/address", postUserAddress);
 //userListAddress
 router.get("/user/get/:id", validateJwtToken, getUserListAddressById);
 //uploadImage
-router.post("/user/profile", upload.single("profile"), userProfile);
+router.post(
+  "/user/profile",
+  upload.single("profile"),
+  validateUserProfile,
+  userProfile
+);
 
 export default router;

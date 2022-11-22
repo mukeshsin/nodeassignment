@@ -33,8 +33,7 @@ const User = db.define(
     lastName: {
       type: DataTypes.STRING,
     },
-
-     image: {
+    image: {
       type: DataTypes.STRING,
     },
     roleId: {

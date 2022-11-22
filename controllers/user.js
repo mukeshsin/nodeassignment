@@ -153,6 +153,14 @@ export const getUserListAddressById = async (req, res) => {
 };
 
 export const userProfile = async (req, res) => {
-  console.log("storage location is ", req.hostname + "/" + req.file.path);
-  return res.send(req.file);
+  try {
+    User.update({ image: req.file.path }, { where: { id: req.body.id } });
+    res.status(200).send({
+      message: "Image updated successfully ",
+    });
+  } catch (error) {
+    res.status(500).send({
+      message: "500 error to the user",
+    });
+  }
 };
