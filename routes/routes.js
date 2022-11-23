@@ -9,8 +9,17 @@ var storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     console.log(file);
-    let newName = Date.now() + "_" + file.originalname;
-    cb(null, newName);
+    let newName = `${Date.now()}_${file.originalname}`;
+
+    if (
+      file.mimetype == "image/png" ||
+      file.mimetype == "image/jpg" ||
+      file.mimetype == "image/jpeg"
+    ) {
+      cb(null, newName);
+    } else {
+      return cb(new Error("Only .png, .jpg and .jpeg format allowed!"));
+    }
   },
 });
 const upload = multer({ storage: storage });
@@ -29,7 +38,6 @@ import { userRegister } from "../controllers/user.js";
 import { userLogin } from "../controllers/user.js";
 import { GetUserDetails } from "../controllers/user.js";
 import { validateAccessToken, validateJwtToken } from "../middleware.js";
-import { validateUserProfile } from "../middleware.js";
 import { deleteUserDetails } from "../controllers/user.js";
 import { getUsersListByPage } from "../controllers/user.js";
 import { postUserAddress } from "../controllers/user.js";
@@ -77,11 +85,6 @@ router.post("/user/address", postUserAddress);
 //userListAddress
 router.get("/user/get/:id", validateJwtToken, getUserListAddressById);
 //uploadImage
-router.post(
-  "/user/profile",
-  upload.single("profile"),
-  validateUserProfile,
-  userProfile
-);
+router.post("/user/profile", upload.single("profile"), userProfile);
 
 export default router;

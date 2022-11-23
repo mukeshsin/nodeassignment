@@ -154,7 +154,7 @@ export const getUserListAddressById = async (req, res) => {
 
 export const userProfile = async (req, res) => {
   try {
-    User.update({ image: req.file.path }, { where: { id: req.body.id } });
+    await User.update({ image: req.file.path }, { where: { id: req.body.id } });
     res.status(200).send({
       message: "Image updated successfully ",
     });
