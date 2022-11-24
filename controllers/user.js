@@ -1,7 +1,10 @@
+import * as dotenv from "dotenv";
+dotenv.config();
 import User from "../models/user.js";
 import Address from "../models/address.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+
 //user Register
 export const userRegister = async (req, res) => {
   const salt = await bcrypt.genSalt();
@@ -53,7 +56,9 @@ export const userLogin = async (req, res) => {
     if (!user) {
       res.status(400).json({ error: "user error" });
     } else {
-      let token = jwt.sign({ id: user.id }, "secret", { expiresIn: "1hr" });
+      let token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY, {
+        expiresIn: "1hr",
+      });
       return res.status(200).send({ user, token: token });
     }
   } catch (err) {

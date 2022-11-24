@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 
 export const validateAccessToken = async (req, res, next) => {
-  console.log(req);
   if (!req.headers.id) {
     res.status(400).send({ err: "please provide users.id" });
   } else {
@@ -10,13 +9,13 @@ export const validateAccessToken = async (req, res, next) => {
 };
 
 export const validateJwtToken = async (req, res, next) => {
-  const token = req.body.token || req.query.token || req.headers["id"];
+  const token = req.headers
   if (!token) {
-    res.status(401).send({ message: " please provide user.id" });
+    res.status(401).send({ message: "unauthorised token" });
   }
   jwt.verify(token, "secret", (err, user) => {
     if (err) {
-      res.status(400).send({ message: "token expired" });
+      res.status(400).send({ message: "unauthorised token expire" });
     } else {
       res.send(user);
       next();

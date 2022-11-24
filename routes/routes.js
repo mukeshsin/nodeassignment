@@ -8,15 +8,14 @@ var storage = multer.diskStorage({
     cb(null, "public");
   },
   filename: function (req, file, cb) {
-    console.log(file);
-    let newName = `${Date.now()}_${file.originalname}`;
+    let newfileName = `${Date.now()}_${file.originalname}`;
 
     if (
       file.mimetype == "image/png" ||
       file.mimetype == "image/jpg" ||
       file.mimetype == "image/jpeg"
     ) {
-      cb(null, newName);
+      cb(null, newfileName);
     } else {
       return cb(new Error("Only .png, .jpg and .jpeg format allowed!"));
     }
@@ -80,11 +79,16 @@ router.delete(
 router.get("/user/list/:page", validateJwtToken, getUsersListByPage);
 
 //post for user address
-router.post("/user/address", postUserAddress);
+router.post("/user/address", validateJwtToken, postUserAddress);
 
 //userListAddress
 router.get("/user/get/:id", validateJwtToken, getUserListAddressById);
 //uploadImage
-router.post("/user/profile", upload.single("profile"), userProfile);
+router.post(
+  "/user/profile",
+  validateJwtToken,
+  upload.single("profile"),
+  userProfile
+);
 
 export default router;
