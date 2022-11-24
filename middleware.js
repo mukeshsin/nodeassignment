@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
+
 export const validateAccessToken = async (req, res, next) => {
-  console.log(req);
   if (!req.headers.id) {
     res.status(400).send({ err: "please provide users.id" });
   } else {
@@ -9,16 +9,15 @@ export const validateAccessToken = async (req, res, next) => {
 };
 
 export const validateJwtToken = async (req, res, next) => {
-  const token = req.headers["id"];
-
+  const token = req.headers.id;
   if (!token) {
-    res.status(401).send({ message: " token invalid" });
+    res.status(401).send({ message: "unauthorised token" });
   }
-  jwt.verify(token, "secret", (err, user) => {
+  jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
     if (err) {
-      res.status(400).send({ err: "token expired" });
+      console.log(err);
+      res.status(400).send({ message: "unauthorised token expire" });
     } else {
-      res.send(user);
       next();
     }
   });

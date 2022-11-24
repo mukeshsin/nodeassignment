@@ -1,6 +1,28 @@
 // Import express
 import express from "express";
 
+// upload single image
+import multer from "multer";
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public");
+  },
+  filename: function (req, file, cb) {
+    let newfileName = `${Date.now()}_${file.originalname}`;
+
+    if (
+      file.mimetype == "image/png" ||
+      file.mimetype == "image/jpg" ||
+      file.mimetype == "image/jpeg"
+    ) {
+      cb(null, newfileName);
+    } else {
+      return cb(new Error("Only .png, .jpg and .jpeg format allowed!"));
+    }
+  },
+});
+const upload = multer({ storage: storage });
+
 //Import Role controller
 import {
   getRoles,
@@ -19,6 +41,10 @@ import { deleteUserDetails } from "../controllers/user.js";
 import { getUsersListByPage } from "../controllers/user.js";
 import { postUserAddress } from "../controllers/user.js";
 import { getUserListAddressById } from "../controllers/user.js";
+
+//import uploadImage
+import { userProfile } from "../controllers/user.js";
+
 // Init express router
 const router = express.Router();
 
@@ -50,12 +76,19 @@ router.delete(
 );
 
 // get users data by page no.
-router.get("/user/list/:page", getUsersListByPage);
+router.get("/user/list/:page", validateJwtToken, getUsersListByPage);
 
 //post for user address
-router.post("/user/address", postUserAddress);
+router.post("/user/address", validateJwtToken, postUserAddress);
 
 //userListAddress
-router.get("/user/get/:id", getUserListAddressById);
+router.get("/user/get/:id", validateJwtToken, getUserListAddressById);
+//uploadImage
+router.post(
+  "/user/profile",
+  validateJwtToken,
+  upload.single("profile"),
+  userProfile
+);
 
 export default router;
