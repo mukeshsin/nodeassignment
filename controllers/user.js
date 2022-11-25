@@ -10,9 +10,6 @@ export const userRegister = async (req, res) => {
   const salt = await bcrypt.genSalt();
   const hashedPassword = await bcrypt.hash(req.body.password, salt);
   await bcrypt.hash(req.body.confirmPassword, salt);
-  console.log(hashedPassword);
-  console.log(salt);
-
   try {
     await User.create({
       userName: req.body.userName,
@@ -27,7 +24,6 @@ export const userRegister = async (req, res) => {
     res.status(200).send({
       message: "User register successful",
     });
-    console.log(User);
   } catch (error) {
     res.status(500).send({
       message: "500 error to the user",
@@ -43,7 +39,6 @@ export const userLogin = async (req, res) => {
   }
   const salt = await bcrypt.genSalt();
   const hashedPassword = await bcrypt.compare(req.body.password, salt);
-  console.log(hashedPassword);
   try {
     const user = await User.findOne({
       where: {
@@ -51,8 +46,6 @@ export const userLogin = async (req, res) => {
         password: hashedPassword,
       },
     });
-    console.log({ userName: userName, password: password });
-    console.log(user);
     if (!user) {
       res.status(400).json({ error: "user error" });
     } else {
@@ -62,7 +55,6 @@ export const userLogin = async (req, res) => {
       return res.status(200).send({ user, token: token });
     }
   } catch (err) {
-    console.log(err);
     res.status(500).send({
       message: "500 error to the user",
     });
@@ -78,7 +70,6 @@ export const GetUserDetails = async (req, res) => {
         id: req.headers.id,
       },
     });
-    console.log(users);
     res.status(200).send(users);
   } catch (error) {
     res.status(500).send({
@@ -111,7 +102,6 @@ export const getUsersListByPage = async (req, res) => {
     limit: parseInt(req.query.limit),
     offset: (req.params.page - 1) * parseInt(req.query.limit),
   });
-  console.log(users);
   res.status(200).send(users);
 };
 
@@ -130,7 +120,6 @@ export const postUserAddress = async (req, res) => {
     res.status(200).send({
       message: "Insert Data successfully ",
     });
-    console.log(Address);
   } catch (error) {
     res.status(500).send({
       message: "500 error to the user",
@@ -153,7 +142,6 @@ export const getUserListAddressById = async (req, res) => {
       id: req.params.id,
     },
   });
-  console.log(data);
   res.status(200).send({ user: data });
 };
 
