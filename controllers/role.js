@@ -1,5 +1,4 @@
 import Role from "../models/role.js";
-
 export const createRole = async (req, res) => {
   try {
     await Role.create(req.body);

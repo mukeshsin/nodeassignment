@@ -15,7 +15,6 @@ export const validateJwtToken = async (req, res, next) => {
   }
   jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
     if (err) {
-      console.log(err);
       res.status(400).send({ message: "unauthorised token expire" });
     } else {
       next();
