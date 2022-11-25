@@ -6,7 +6,7 @@ import cors from "cors";
 import db from "./config/db.config.js";
 //import router
 import Router from "./routes/routes.js";
-//await db.sync({ alter: true });
+await db.sync({ alter: true });
 
 // models
 import "./models/index.js";
