@@ -4,7 +4,6 @@ import User from "../models/user.js";
 import Address from "../models/address.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import crypto from "crypto";
 
 //user Register
 export const userRegister = async (req, res) => {
@@ -159,22 +158,11 @@ export const userProfile = async (req, res) => {
   }
 };
 
-// const createPasswordResetToken = function () {
-//   const resetToken = crypto.randomBytes(32).toString("hex");
-//   User.passwordResetToken = crypto
-//     .createHash("sha256")
-//     .update(resetToken)
-//     .digest("hex");
-//   User.passwordResetExpire = Date.now() + 10 * 60 * 1000;
-//   return resetToken;
-// };
-
 export const userForgotPassword = async (req, res) => {
   const { userName } = req.body;
   if (!userName) {
     res.status(400).send({ message: "invalid credentials" });
   }
-
   try {
     const user = await User.findOne({
       where: {
@@ -184,17 +172,17 @@ export const userForgotPassword = async (req, res) => {
     if (!user) {
       res.status(400).send({ message: " User Doesn't exist" });
     } else {
-      let token = await token.findOne({ id: user.id });
-      let resetToken = crypto.randomBytes(32).toString("hex");
-      const hash = await bcrypt.hash(resetToken, Number(bcryptSalt));
-      await new token({
-        id: user.id,
-        token: hash,
-        createdAt: Date.now(),
-      }).save();
-      res.status(200).send({ user, token: new token() });
+      let token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY, {
+        expiresIn: "10min",
+      });
+      await User.update(
+        { passwordResetToken: token },
+        { where: { userName: req.body.userName } }
+      );
+      res.status(200).send({ user: userName, token: token });
     }
   } catch (error) {
+    console.log(error);
     res.status(500).send({ message: "500 error to the user" });
   }
 };
