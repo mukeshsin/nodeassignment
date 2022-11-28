@@ -23,6 +23,8 @@ import { getUserListAddressById } from "../controllers/user.js";
 //import uploadImage
 import { userProfile } from "../controllers/user.js";
 import { upload } from "../controllers/fileupload.js";
+import { userForgotPassword } from "../controllers/user.js";
+import { verifyResetPassword } from "../controllers/user.js";
 // Init express router
 const router = express.Router();
 
@@ -68,5 +70,10 @@ router.post(
   upload.single("profile"),
   userProfile
 );
+
+// user forgot password
+router.post("/user/forgot-password", userForgotPassword);
+// verify reset password
+router.post("/user/verifyResetToken/:passwordResetToken", verifyResetPassword);
 
 export default router;

@@ -36,6 +36,10 @@ const User = db.define(
     image: {
       type: DataTypes.STRING,
     },
+    passwordResetToken: {
+      type: DataTypes.STRING,
+    },
+   
     roleId: {
       type: DataTypes.INTEGER,
       allownull: false,

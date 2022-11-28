@@ -157,3 +157,67 @@ export const userProfile = async (req, res) => {
     });
   }
 };
+
+export const userForgotPassword = async (req, res) => {
+  const { userName } = req.body;
+  if (!userName) {
+    res.status(400).send({ message: "invalid credentials" });
+  }
+  try {
+    const user = await User.findOne({
+      where: {
+        userName: userName,
+      },
+    });
+    if (!user) {
+      res.status(400).send({ message: " User Doesn't exist" });
+    } else {
+      let token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY, {
+        expiresIn: "10min",
+      });
+      await User.update(
+        { passwordResetToken: token },
+        { where: { userName: req.body.userName } }
+      );
+      res.status(200).send({ user: userName, token: token });
+    }
+  } catch (error) {
+    res.status(500).send({ message: "500 error to the user" });
+  }
+};
+
+export const verifyResetPassword = async (req, res) => {
+  const { passwordResetToken } = req.params;
+  if (!passwordResetToken) {
+    res.status(400).json({ error: "Please provide reset token" });
+  }
+  jwt.verify(
+    passwordResetToken,
+    process.env.JWT_SECRET_KEY,
+    async (err, user) => {
+      if (err) {
+        res.status(400).send({ message: "unauthorised token expire" });
+      } else {
+        const { password } = req.body;
+        if (!password) {
+          res.status(400).send({ message: "password cannot be empty" });
+        }
+        if (!password.length) {
+          res.status(400).send({ message: "password cannot be empty" });
+        }
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(password, salt);
+        try {
+          await User.update(
+            { password: hashedPassword, passwordResetToken: null },
+            { where: { passwordResetToken: passwordResetToken } }
+          );
+          res.status(200).send({ message: "password changed successfully" });
+        } catch (error) {
+          console.log(error);
+          res.status(500).send({ message: "500 error to the user" });
+        }
+      }
+    }
+  );
+};
