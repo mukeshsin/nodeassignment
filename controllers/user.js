@@ -206,19 +206,13 @@ export const verifyResetPassword = async (req, res) => {
           res.status(400).send({ message: "password cannot be empty" });
         }
         const salt = await bcrypt.genSalt();
-        const hashedPassword = await bcrypt.hash(req.body.password, salt);
+        const hashedPassword = await bcrypt.hash(password, salt);
         try {
           await User.update(
-            { password: hashedPassword },
-            { where: { userName: req.body.userName } }
+            { password: hashedPassword, passwordResetToken: null },
+            { where: { passwordResetToken: passwordResetToken } }
           );
           res.status(200).send({ message: "password changed successfully" });
-          const deleted = passwordResetToken;
-          User.update(
-            { passwordResetToken: deleted },
-            { where: { userName: req.body.userName } }
-          );
-          res.status().send({ message: "password reset token deleted" });
         } catch (error) {
           console.log(error);
           res.status(500).send({ message: "500 error to the user" });
