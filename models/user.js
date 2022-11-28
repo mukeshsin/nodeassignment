@@ -39,9 +39,7 @@ const User = db.define(
     passwordResetToken: {
       type: DataTypes.STRING,
     },
-    passwordResetExpire: {
-      type: DataTypes.DATE,
-    },
+   
     roleId: {
       type: DataTypes.INTEGER,
       allownull: false,

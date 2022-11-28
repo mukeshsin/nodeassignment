@@ -182,7 +182,48 @@ export const userForgotPassword = async (req, res) => {
       res.status(200).send({ user: userName, token: token });
     }
   } catch (error) {
-    console.log(error);
     res.status(500).send({ message: "500 error to the user" });
   }
+};
+
+export const verifyResetPassword = async (req, res) => {
+  const { passwordResetToken } = req.params;
+  if (!passwordResetToken) {
+    res.status(400).json({ error: "Please provide reset token" });
+  }
+  jwt.verify(
+    passwordResetToken,
+    process.env.JWT_SECRET_KEY,
+    async (err, user) => {
+      if (err) {
+        res.status(400).send({ message: "unauthorised token expire" });
+      } else {
+        const { password } = req.body;
+        if (!password) {
+          res.status(400).send({ message: "password cannot be empty" });
+        }
+        if (!password.length) {
+          res.status(400).send({ message: "password cannot be empty" });
+        }
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(req.body.password, salt);
+        try {
+          await User.update(
+            { password: hashedPassword },
+            { where: { userName: req.body.userName } }
+          );
+          res.status(200).send({ message: "password changed successfully" });
+          const deleted = passwordResetToken;
+          User.update(
+            { passwordResetToken: deleted },
+            { where: { userName: req.body.userName } }
+          );
+          res.status().send({ message: "password reset token deleted" });
+        } catch (error) {
+          console.log(error);
+          res.status(500).send({ message: "500 error to the user" });
+        }
+      }
+    }
+  );
 };
