@@ -232,13 +232,13 @@ export const sendEmail = async (req, res) => {
     service: "gmail",
     auth: {
       user: "mukeshsingh7127@gmail.com",
-      pass: "singh@2023",
+      pass: "sqtgfhbptftuqahm",
     },
   });
 
   var mailOptions = {
     from: "mukeshsingh7127@gmail.com",
-    to: "rvsingh1650@gmail.com",
+    to: "saurabh@innotechteam.in",
     subject: "Sending Email using Node.js",
     text: "This is message  sended by gmail",
   };
@@ -249,7 +249,7 @@ export const sendEmail = async (req, res) => {
       res.status(500).send({ message: "500 error to the user" });
     } else {
       console.log("Email sent: " + info.response);
-      res.status(200).status({ message: "Email has been sent successfully" });
+      res.status(200).send({ message: "Email has been sent successfully" });
     }
   });
 };
