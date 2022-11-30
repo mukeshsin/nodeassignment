@@ -4,6 +4,7 @@ import User from "../models/user.js";
 import Address from "../models/address.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
 
 //user Register
 export const userRegister = async (req, res) => {
@@ -220,4 +221,35 @@ export const verifyResetPassword = async (req, res) => {
       }
     }
   );
+};
+
+export const sendEmail = async (req, res) => {
+  var transporter = nodemailer.createTransport({
+    pool: true,
+    host: "my.smtp.host",
+    port: 465,
+    secure: true,
+    service: "gmail",
+    auth: {
+      user: "mukeshsingh7127@gmail.com",
+      pass: "singh@2023",
+    },
+  });
+
+  var mailOptions = {
+    from: "mukeshsingh7127@gmail.com",
+    to: "rvsingh1650@gmail.com",
+    subject: "Sending Email using Node.js",
+    text: "This is message  sended by gmail",
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+      res.status(500).send({ message: "500 error to the user" });
+    } else {
+      console.log("Email sent: " + info.response);
+      res.status(200).status({ message: "Email has been sent successfully" });
+    }
+  });
 };
