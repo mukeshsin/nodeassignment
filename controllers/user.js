@@ -237,18 +237,6 @@ export const sendEmail = async (req, res) => {
     },
   });
 
-  console.log({
-    pool: true,
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    service: "gmail",
-    auth: {
-      user: process.env.user,
-      pass: process.env.pass,
-    },
-  });
-
   var mailOptions = {
     from: "mukeshsingh7127@gmail.com",
     to: "mukesh@innotechteam.in",
