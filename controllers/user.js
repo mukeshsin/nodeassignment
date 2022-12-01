@@ -5,13 +5,14 @@ import Address from "../models/address.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import SMTPConnection from "nodemailer/lib/smtp-connection/index.js";
 
 //user Register
 export const userRegister = async (req, res) => {
-  const salt = await bcrypt.genSalt();
-  const hashedPassword = await bcrypt.hash(req.body.password, salt);
-  await bcrypt.hash(req.body.confirmPassword, salt);
   try {
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    await bcrypt.hash(req.body.confirmPassword, salt);
     await User.create({
       userName: req.body.userName,
       password: hashedPassword,
@@ -160,11 +161,11 @@ export const userProfile = async (req, res) => {
 };
 
 export const userForgotPassword = async (req, res) => {
-  const { userName } = req.body;
-  if (!userName) {
-    res.status(400).send({ message: "invalid credentials" });
-  }
   try {
+    const { userName } = req.body;
+    if (!userName) {
+      res.status(400).send({ message: "invalid credentials" });
+    }
     const user = await User.findOne({
       where: {
         userName: userName,
@@ -226,19 +227,31 @@ export const verifyResetPassword = async (req, res) => {
 export const sendEmail = async (req, res) => {
   var transporter = nodemailer.createTransport({
     pool: true,
-    host: "my.smtp.host",
+    host: "smtp.gmail.com",
     port: 465,
     secure: true,
     service: "gmail",
     auth: {
-      user: "mukeshsingh7127@gmail.com",
-      pass: "sqtgfhbptftuqahm",
+      user: process.env.user,
+      pass: process.env.pass,
+    },
+  });
+
+  console.log({
+    pool: true,
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    service: "gmail",
+    auth: {
+      user: process.env.user,
+      pass: process.env.pass,
     },
   });
 
   var mailOptions = {
     from: "mukeshsingh7127@gmail.com",
-    to: "saurabh@innotechteam.in",
+    to: "mukesh@innotechteam.in",
     subject: "Sending Email using Node.js",
     text: "This is message  sended by gmail",
   };

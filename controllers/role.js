@@ -60,7 +60,7 @@ export const deleteRole = async (req, res) => {
   try {
     await Role.destroy({
       where: {
-        id: req.params.id,
+        id: req?.params?.id,
       },
     });
     res.status(200).send({
