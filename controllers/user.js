@@ -5,7 +5,6 @@ import Address from "../models/address.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
-import SMTPConnection from "nodemailer/lib/smtp-connection/index.js";
 
 //user Register
 export const userRegister = async (req, res) => {
@@ -35,13 +34,13 @@ export const userRegister = async (req, res) => {
 
 //userlogin
 export const userLogin = async (req, res) => {
-  const { userName, password } = req.body;
-  if (!userName || !password) {
-    res.status(400).json({ error: "Please fill the details" });
-  }
-  const salt = await bcrypt.genSalt();
-  const hashedPassword = await bcrypt.compare(req.body.password, salt);
   try {
+    const { userName, password } = req.body;
+    if (!userName || !password) {
+      res.status(400).json({ error: "Please fill the details" });
+    }
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.compare(req.body.password, salt);
     const user = await User.findOne({
       where: {
         userName: userName,
@@ -100,11 +99,15 @@ export const deleteUserDetails = async (req, res) => {
 
 // users list by page no.
 export const getUsersListByPage = async (req, res) => {
-  const users = await User.findAndCountAll({
-    limit: parseInt(req.query.limit),
-    offset: (req.params.page - 1) * parseInt(req.query.limit),
-  });
-  res.status(200).send(users);
+  try {
+    const users = await User.findAndCountAll({
+      limit: parseInt(req.query.limit),
+      offset: (req.params.page - 1) * parseInt(req.query.limit),
+    });
+    res.status(200).send(users);
+  } catch (error) {
+    res.status(500).send({ message: "500 error to the user" });
+  }
 };
 
 // post user address
@@ -131,20 +134,24 @@ export const postUserAddress = async (req, res) => {
 
 //userListWithAddress
 export const getUserListAddressById = async (req, res) => {
-  const data = await User.findAll({
-    attributes: ["userName", "emailId"],
-    include: [
-      {
-        model: Address,
-        as: "addressList",
-        attributes: ["address", "city", "state", "pinCode"],
+  try {
+    const data = await User.findAll({
+      attributes: ["userName", "emailId"],
+      include: [
+        {
+          model: Address,
+          as: "addressList",
+          attributes: ["address", "city", "state", "pinCode"],
+        },
+      ],
+      where: {
+        id: req.params.id,
       },
-    ],
-    where: {
-      id: req.params.id,
-    },
-  });
-  res.status(200).send({ user: data });
+    });
+    res.status(200).send({ user: data });
+  } catch (error) {
+    res.status(500).send({ message: "500 error to the user" });
+  }
 };
 
 export const userProfile = async (req, res) => {
@@ -189,43 +196,43 @@ export const userForgotPassword = async (req, res) => {
 };
 
 export const verifyResetPassword = async (req, res) => {
-  const { passwordResetToken } = req.params;
-  if (!passwordResetToken) {
-    res.status(400).json({ error: "Please provide reset token" });
-  }
-  jwt.verify(
-    passwordResetToken,
-    process.env.JWT_SECRET_KEY,
-    async (err, user) => {
-      if (err) {
-        res.status(400).send({ message: "unauthorised token expire" });
-      } else {
-        const { password } = req.body;
-        if (!password) {
-          res.status(400).send({ message: "password cannot be empty" });
-        }
-        if (!password.length) {
-          res.status(400).send({ message: "password cannot be empty" });
+  try {
+    const { passwordResetToken } = req.params;
+    if (!passwordResetToken) {
+      res.status(400).json({ error: "Please provide reset token" });
+    }
+    jwt.verify(
+      passwordResetToken,
+      process.env.JWT_SECRET_KEY,
+      async (err, user) => {
+        if (err) {
+          res.status(400).send({ message: "unauthorised token expire" });
+        } else {
+          const { password } = req.body;
+          if (!password) {
+            res.status(400).send({ message: "password cannot be empty" });
+          }
+          if (!password.length) {
+            res.status(400).send({ message: "password cannot be empty" });
+          }
         }
         const salt = await bcrypt.genSalt();
-        const hashedPassword = await bcrypt.hash(password, salt);
-        try {
-          await User.update(
-            { password: hashedPassword, passwordResetToken: null },
-            { where: { passwordResetToken: passwordResetToken } }
-          );
-          res.status(200).send({ message: "password changed successfully" });
-        } catch (error) {
-          console.log(error);
-          res.status(500).send({ message: "500 error to the user" });
-        }
+        const hashedPassword = await bcrypt.hash(req.body.password, salt);
+        await User.update(
+          { password: hashedPassword, passwordResetToken: null },
+          { where: { passwordResetToken: passwordResetToken } }
+        );
+        res.status(200).send({ message: "password changed successfully" });
       }
-    }
-  );
+    );
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "500 error to the user" });
+  }
 };
 
 export const sendEmail = async (req, res) => {
-  var transporter = nodemailer.createTransport({
+  let transporter = nodemailer.createTransport({
     pool: true,
     host: "smtp.gmail.com",
     port: 465,
@@ -244,7 +251,7 @@ export const sendEmail = async (req, res) => {
     text: "This is message  sended by gmail",
   };
 
-  transporter.sendMail(mailOptions, function (error, info) {
+  await transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       console.log(error);
       res.status(500).send({ message: "500 error to the user" });

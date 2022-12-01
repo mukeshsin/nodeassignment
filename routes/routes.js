@@ -25,7 +25,7 @@ import { userProfile } from "../controllers/user.js";
 import { upload } from "../controllers/fileupload.js";
 import { userForgotPassword } from "../controllers/user.js";
 import { verifyResetPassword } from "../controllers/user.js";
-import {sendEmail} from"../controllers/user.js";
+import { sendEmail } from "../controllers/user.js";
 // Init express router
 const router = express.Router();
 
@@ -78,6 +78,6 @@ router.post("/user/forgot-password", userForgotPassword);
 router.post("/user/verifyResetToken/:passwordResetToken", verifyResetPassword);
 
 //send an email by nodemailer
-router.post("/user/sendemail",sendEmail);
+router.post("/user/sendemail", sendEmail);
 
 export default router;
