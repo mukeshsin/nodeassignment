@@ -188,6 +188,9 @@ export const userForgotPassword = async (req, res) => {
         { passwordResetToken: token },
         { where: { userName: req.body.userName } }
       );
+      const sendEmailRes = await sendEmail(token);
+
+      console.log(token);
       res.status(200).send({ user: userName, token: token });
     }
   } catch (error) {
@@ -245,20 +248,24 @@ export const sendEmail = async (req, res) => {
       },
     });
 
+    const passwordResetToken = "";
+
+    const url = `http://localhost:3000/user/verifyResetToken/${passwordResetToken}`;
+
     const mailOptions = {
       from: "mukeshsingh7127@gmail.com",
-      to: "yuvraj@innotechteam.in",
+      to: "mukesh@innotechteam.in",
       subject: "Sending Email using Node.js",
       text: "This is message  sended by gmail",
       html: `<p style="text-align:center;"><img src="https://img.icons8.com/ios-glyphs/30/null/gmail.png"/></p>
       <h2 style="text-align:center;
       font-family:verdana" >Password Reset</h2>
       <p style="margin-left:25px">Seems like you forgot your password for register if this is true click the below the password reset button</p>
-      <p style="text-align:center"><button style="background-color:yellow;"><a style="text-decoration:none"; href="http://localhost:3000/user/verifyResetToken/:passwordResetToken">Reset Password</a></button></p>
+      <p style="text-align:center"><a style="text-decoration:none; color:white; background-color: blue; padding: 6px 8px; border-radius: 5px;" href="${url}">Reset Password</a></button></p>
       <p style="margin-left:25px">if you didn't forgot password you can safely ignore the mail </p>`,
     };
-    let response = await transporter.sendMail(mailOptions);
-    res.status(200).send({ response });
+    return await transporter.sendMail(mailOptions);
+    // res.status(200).send({response});
   } catch (error) {
     res.status(500).send({ message: "500 error to the user" });
   }
