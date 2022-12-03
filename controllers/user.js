@@ -4,13 +4,14 @@ import User from "../models/user.js";
 import Address from "../models/address.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
 
 //user Register
 export const userRegister = async (req, res) => {
-  const salt = await bcrypt.genSalt();
-  const hashedPassword = await bcrypt.hash(req.body.password, salt);
-  await bcrypt.hash(req.body.confirmPassword, salt);
   try {
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    await bcrypt.hash(req.body.confirmPassword, salt);
     await User.create({
       userName: req.body.userName,
       password: hashedPassword,
@@ -33,13 +34,13 @@ export const userRegister = async (req, res) => {
 
 //userlogin
 export const userLogin = async (req, res) => {
-  const { userName, password } = req.body;
-  if (!userName || !password) {
-    res.status(400).json({ error: "Please fill the details" });
-  }
-  const salt = await bcrypt.genSalt();
-  const hashedPassword = await bcrypt.compare(req.body.password, salt);
   try {
+    const { userName, password } = req.body;
+    if (!userName || !password) {
+      res.status(400).json({ error: "Please fill the details" });
+    }
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.compare(req.body.password, salt);
     const user = await User.findOne({
       where: {
         userName: userName,
@@ -98,11 +99,15 @@ export const deleteUserDetails = async (req, res) => {
 
 // users list by page no.
 export const getUsersListByPage = async (req, res) => {
-  const users = await User.findAndCountAll({
-    limit: parseInt(req.query.limit),
-    offset: (req.params.page - 1) * parseInt(req.query.limit),
-  });
-  res.status(200).send(users);
+  try {
+    const users = await User.findAndCountAll({
+      limit: parseInt(req.query.limit),
+      offset: (req.params.page - 1) * parseInt(req.query.limit),
+    });
+    res.status(200).send(users);
+  } catch (error) {
+    res.status(500).send({ message: "500 error to the user" });
+  }
 };
 
 // post user address
@@ -129,20 +134,24 @@ export const postUserAddress = async (req, res) => {
 
 //userListWithAddress
 export const getUserListAddressById = async (req, res) => {
-  const data = await User.findAll({
-    attributes: ["userName", "emailId"],
-    include: [
-      {
-        model: Address,
-        as: "addressList",
-        attributes: ["address", "city", "state", "pinCode"],
+  try {
+    const data = await User.findAll({
+      attributes: ["userName", "emailId"],
+      include: [
+        {
+          model: Address,
+          as: "addressList",
+          attributes: ["address", "city", "state", "pinCode"],
+        },
+      ],
+      where: {
+        id: req.params.id,
       },
-    ],
-    where: {
-      id: req.params.id,
-    },
-  });
-  res.status(200).send({ user: data });
+    });
+    res.status(200).send({ user: data });
+  } catch (error) {
+    res.status(500).send({ message: "500 error to the user" });
+  }
 };
 
 export const userProfile = async (req, res) => {
@@ -159,11 +168,11 @@ export const userProfile = async (req, res) => {
 };
 
 export const userForgotPassword = async (req, res) => {
-  const { userName } = req.body;
-  if (!userName) {
-    res.status(400).send({ message: "invalid credentials" });
-  }
   try {
+    const { userName } = req.body;
+    if (!userName) {
+      res.status(400).send({ message: "invalid credentials" });
+    }
     const user = await User.findOne({
       where: {
         userName: userName,
@@ -179,6 +188,9 @@ export const userForgotPassword = async (req, res) => {
         { passwordResetToken: token },
         { where: { userName: req.body.userName } }
       );
+      const sendEmailRes = await sendEmail(token);
+
+      console.log(token);
       res.status(200).send({ user: userName, token: token });
     }
   } catch (error) {
@@ -187,37 +199,74 @@ export const userForgotPassword = async (req, res) => {
 };
 
 export const verifyResetPassword = async (req, res) => {
-  const { passwordResetToken } = req.params;
-  if (!passwordResetToken) {
-    res.status(400).json({ error: "Please provide reset token" });
-  }
-  jwt.verify(
-    passwordResetToken,
-    process.env.JWT_SECRET_KEY,
-    async (err, user) => {
-      if (err) {
-        res.status(400).send({ message: "unauthorised token expire" });
-      } else {
-        const { password } = req.body;
-        if (!password) {
-          res.status(400).send({ message: "password cannot be empty" });
-        }
-        if (!password.length) {
-          res.status(400).send({ message: "password cannot be empty" });
+  try {
+    const { passwordResetToken } = req.params;
+    if (!passwordResetToken) {
+      res.status(400).json({ error: "Please provide reset token" });
+    }
+    jwt.verify(
+      passwordResetToken,
+      process.env.JWT_SECRET_KEY,
+      async (err, user) => {
+        if (err) {
+          res.status(400).send({ message: "unauthorised token expire" });
+        } else {
+          const { password } = req.body;
+          if (!password) {
+            res.status(400).send({ message: "password cannot be empty" });
+          }
+          if (!password.length) {
+            res.status(400).send({ message: "password cannot be empty" });
+          }
         }
         const salt = await bcrypt.genSalt();
-        const hashedPassword = await bcrypt.hash(password, salt);
-        try {
-          await User.update(
-            { password: hashedPassword, passwordResetToken: null },
-            { where: { passwordResetToken: passwordResetToken } }
-          );
-          res.status(200).send({ message: "password changed successfully" });
-        } catch (error) {
-          console.log(error);
-          res.status(500).send({ message: "500 error to the user" });
-        }
+        const hashedPassword = await bcrypt.hash(req.body.password, salt);
+        await User.update(
+          { password: hashedPassword, passwordResetToken: null },
+          { where: { passwordResetToken: passwordResetToken } }
+        );
+        res.status(200).send({ message: "password changed successfully" });
       }
-    }
-  );
+    );
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "500 error to the user" });
+  }
+};
+
+export const sendEmail = async (req, res) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      pool: true,
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      service: "gmail",
+      auth: {
+        user: process.env.user,
+        pass: process.env.pass,
+      },
+    });
+
+    const passwordResetToken = "";
+
+    const url = `http://localhost:3000/user/verifyResetToken/${passwordResetToken}`;
+
+    const mailOptions = {
+      from: "mukeshsingh7127@gmail.com",
+      to: "mukesh@innotechteam.in",
+      subject: "Sending Email using Node.js",
+      text: "This is message  sended by gmail",
+      html: `<p style="text-align:center;"><img src="https://img.icons8.com/ios-glyphs/30/null/gmail.png"/></p>
+      <h2 style="text-align:center;
+      font-family:verdana" >Password Reset</h2>
+      <p style="margin-left:25px">Seems like you forgot your password for register if this is true click the below the password reset button</p>
+      <p style="text-align:center"><a style="text-decoration:none; color:white; background-color: blue; padding: 6px 8px; border-radius: 5px;" href="${url}">Reset Password</a></button></p>
+      <p style="margin-left:25px">if you didn't forgot password you can safely ignore the mail </p>`,
+    };
+    return await transporter.sendMail(mailOptions);
+    // res.status(200).send({response});
+  } catch (error) {
+    res.status(500).send({ message: "500 error to the user" });
+  }
 };
