@@ -188,7 +188,7 @@ export const userForgotPassword = async (req, res) => {
         { passwordResetToken: token },
         { where: { userName: req.body.userName } }
       );
-      const sendEmailRes = await sendEmail(token);
+      const sendEmailRes = await sendEmail(token, res);
 
       console.log(token);
       res.status(200).send({ user: userName, token: token });
@@ -234,7 +234,7 @@ export const verifyResetPassword = async (req, res) => {
   }
 };
 
-export const sendEmail = async (req, res) => {
+export const sendEmail = async (passwordResetToken, res) => {
   try {
     const transporter = nodemailer.createTransport({
       pool: true,
@@ -247,8 +247,6 @@ export const sendEmail = async (req, res) => {
         pass: process.env.pass,
       },
     });
-
-    const passwordResetToken = "";
 
     const url = `http://localhost:3000/user/verifyResetToken/${passwordResetToken}`;
 
@@ -265,7 +263,6 @@ export const sendEmail = async (req, res) => {
       <p style="margin-left:25px">if you didn't forgot password you can safely ignore the mail </p>`,
     };
     return await transporter.sendMail(mailOptions);
-    // res.status(200).send({response});
   } catch (error) {
     res.status(500).send({ message: "500 error to the user" });
   }
